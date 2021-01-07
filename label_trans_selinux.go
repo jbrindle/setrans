@@ -85,8 +85,9 @@ func (c *Conn) sendRequest(t requestType, data string) (string, error) {
 		return "", fmt.Errorf("failed to read from mcstransd: %w", err)
 	}
 
-	str := strings.Trim(string(response), nullChar)
-	return strings.TrimSpace(str), nil
+	// Trim the null terminator that mcstrans sends
+	strlen := len(response) - 1
+	return strings.TrimSpace(string(response[:strlen])), nil
 }
 
 func (c *Conn) makeRequest(label string, t requestType) (string, error) {
